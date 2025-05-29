@@ -61,7 +61,7 @@ const Account = () => {
     const [loading, setLoading] = useState(false);
     const [cities, setCities] = useState([]);
 
-    const API_URL = 'http://localhost:5001/api';
+    const API_URL = 'https://instagrocerrenderserver.up.railway.app/api';
 
     // Fetch cities and warehouses on component mount
     useEffect(() => {
