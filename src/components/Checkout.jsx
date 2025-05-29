@@ -121,12 +121,13 @@ const Checkout = () => {
       setcheckPayment(false);
     }
   }, [selectedPayment]);
-
+  const customerData = JSON.parse(localStorage.getItem("customerData"));
+  // const cartItems = JSON.parse(localStorage.getItem("cartitems"));
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
       const orderData = {
-        customer_id: 1, // local storage
+        customer_id: customerData?.customerId || null, // local storage
         merchant_id: 2, // Replace accordingly
         warehouse_id: 3,
         time_id: 4,
@@ -138,27 +139,56 @@ const Checkout = () => {
         "https://instagrocerrenderserver.up.railway.app/api/order/createOrder",
         orderData
       );
+      // console.log("Order Created response orderid", response.data.orderId)
+      const orderId = response.data.orderId; // Assuming this is returned after order is placed
+
 
       console.log("Order placed successfully:", response.data);
 
-      const saleData = {
-        order_id: response.data.orderId, // Dummy order ID
-        product_id: 5, // Dummy product ID
-        time_id: 4, // Matches your time_id hint
-        customer_id: 1, // From localStorage or session
-        city_id: 3, // Could match warehouse_id or shipping city
-        category_id: 2, // Product category
-        quantity: 1, // Assume 1 unit bought
-        sales_amount: amount, // Total price paid by the customer
-      };
+// Loop through each cart item and post as individual sales
+for (const item of cartItems) {
+  const saleData = {
+    order_id: orderId,
+    product_id: item.product_id,
+    time_id: 4, // Replace with correct time_id if needed
+    customer_id: customerData?.customerId || null,
+    city_id: item.warehouse_id, // Assuming warehouse is city-representative
+    category_id: item.category_id,
+    quantity: item.quantity,
+    sales_amount: (item.price * item.quantity).toFixed(2),
+  };
+
+  try {
+    const response2 = await axios.post(
+      "https://instagrocerrenderserver.up.railway.app/api/sale/createSale",
+      saleData
+    );
+    console.log("Sales data sent:", response2.data);
+  } catch (error) {
+    console.error("Failed to send sale data:", error);
+  }
+}
+
+
+      // const saleData = {
+      //   order_id: response.data.orderId, // Dummy order ID
+      //   product_id: 5, // Dummy product ID
+      //   time_id: 4, // Matches your time_id hint
+      //   customer_id: customerData?.id || null, // From localStorage or session
+      //   city_id: 3, // Could match warehouse_id or shipping city
+      //   category_id: 2, // Product category
+      //   quantity: 1, // Assume 1 unit bought
+      //   sales_amount: amount, // Total price paid by the customer
+      // };
+      // const respone2 = await axios.post(
+      //   "https://instagrocerrenderserver.up.railway.app/api/sale/createSale",
+      //   saleData
+      // );
+      // console.log("Sales data : ", respone2);
 
       removeAllFromCart();
       alert("Order placed successfully!");
-      const respone2 = await axios.post(
-        "https://instagrocerrenderserver.up.railway.app/api/sale/createSale",
-        saleData
-      );
-      console.log("Sales data : ", respone2);
+     
       localStorage.removeItem("paymentSuccess");
       navigate("/");
     } catch (error) {

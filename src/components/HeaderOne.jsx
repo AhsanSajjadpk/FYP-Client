@@ -246,7 +246,7 @@ useEffect(() => {
             <ul className="flex-align flex-wrap d-none d-md-flex">
               <li className="border-right-item">
                 <Link
-                  to="#"
+                  to="https://admin-nine-ebon.vercel.app/"
                   className="text-white text-sm hover-text-decoration-underline"
                 >
                   Become A Seller
@@ -305,7 +305,13 @@ useEffect(() => {
                       Live Chat
                     </Link>
                   </li>
+                  
                 </ul>
+              </li>
+              <li className="on-hover-item border-right-item border-right-item-sm-space">
+                <Link to="/account" className="text-white text-sm py-8">
+                  Account
+                </Link>
               </li>
             </ul>
           </div>
