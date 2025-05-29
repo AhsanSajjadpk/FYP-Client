@@ -128,7 +128,7 @@ const Checkout = () => {
     try {
       const orderData = {
         customer_id: customerData?.customerId || null, // local storage
-        merchant_id: 2, // Replace accordingly
+        merchant_id: 1, // Replace accordingly
         warehouse_id: 3,
         time_id: 4,
         total_price: amount,
